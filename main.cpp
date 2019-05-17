@@ -1,9 +1,5 @@
-#include "pch.h"
-#include <iostream>
-#include <list>
-
-using std::cout;
-using std::endl;
+#ifndef _LIST_
+#define _LIST_
 
 template<class T>
 class List
@@ -21,10 +17,28 @@ private:
 	Node* end_element;
 	size_t size_;
 public:
-	class Iterator
+	class iterator
 	{
 	public:
-		Iterator(Node* it = nullptr) : it{ it } {}
+		iterator(Node* it = nullptr) : it{it} {}
+		iterator& operator = ( const iterator& rhs)
+		{
+			this->it = rhs.it;
+			return *this;
+		}
+		bool operator!=(const iterator& rhs) const
+		{
+			return (this->it != rhs.it);
+		}
+		iterator& operator++()
+		{
+			this->it = this->it->next;
+			return *this;
+		}
+		T operator*() const
+		{
+			return this->it->value;
+		}
 	private:
 		Node* it;
 	};
@@ -53,13 +67,13 @@ public:
 		}
 		size_++;
 	}
-	Iterator begin()
+	iterator begin() const
 	{
-		return Iterator(first_element);
+		return iterator(first_element);
 	}
-	Iterator end()
+	iterator end() const
 	{
-		return Iterator(nullptr);
+		return iterator(nullptr);
 	}
 	T& operator[](const size_t& index)
 	{
@@ -87,40 +101,11 @@ public:
 		previous_element->next = next_element;
 		size_--;
 	}
-	size_t size()
+	size_t size() const
 	{
 		return size_;
 	}
 	~List()
 	{}
-
 };
-
-struct Point
-{
-	Point(int x = 0, int y = 0) : x(x), y(y) {}
-	int x;
-	int y;
-};
-
-int main()
-{
-	List<Point> a;
-	for (int i = 0; i < 10; ++i)
-	{
-		a.push_back(Point(100 + i, 300));
-	}
-	for(const auto& it : a)
-	{
-		cout << it.x << '\t' << it.y << '\n';
-	}
-	a.erase(3);
-	a.erase(5);
-	cout << '\n';
-	for (int i = 0; i < a.size(); ++i)
-	{
-		cout << a[i].x << '\t' << a[i].y << '\n';
-	}
-	cout << a.size();
-	return 0;
-}
+#endif
