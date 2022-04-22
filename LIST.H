@@ -2,22 +2,22 @@
 #define _LIST_
 
 #include <initializer_list>
-#include <algorithm>
+#include <iostream>
 
-template<typename T>
+template<class T>
 class List
 {
 private:
 	struct Node
 	{
 		T value;
-		Node* next;
-		Node* previous;
+		Node* pNext;
+		Node* pPrevious;
 	};
-	Node* first_node;
-	Node* current_node;
-	Node* last_node;
-	size_t m_size;
+    Node* m_pFirstNode;
+	Node* m_pCurrentNode;
+	Node* m_pLastNode;
+	size_t m_nSize;
 public:
 	class const_iterator;
 	class iterator
@@ -31,7 +31,7 @@ public:
 		}
 		iterator& operator++()
 		{
-			it = it->next;
+			it = it->pNext;
 			return *this;
 		}
 		iterator operator++(int)
@@ -42,7 +42,7 @@ public:
 		}
 		iterator& operator--()
 		{
-			it = it->previous;
+			it = it->pPrevious;
 			return *this;
 		}
 		iterator operator--(int)
@@ -83,7 +83,7 @@ public:
 		}
 		const_iterator& operator++()
 		{
-			it = it->next;
+			it = it->pNext;
 			return *this;
 		}
 		const_iterator operator++(int)
@@ -94,7 +94,7 @@ public:
 		}
 		const_iterator& operator--()
 		{
-			it = it->previous;
+			it = it->pPrevious;
 			return *this;
 		}
 		const_iterator operator--(int)
@@ -135,7 +135,7 @@ public:
 		}
 		reverse_iterator& operator++()
 		{
-			it = it->previous;
+			it = it->pPrevious;
 			return *this;
 		}
 		reverse_iterator operator++(int)
@@ -146,7 +146,7 @@ public:
 		}
 		reverse_iterator& operator--()
 		{
-			it = it->next;
+			it = it->pNext;
 			return *this;
 		}
 		reverse_iterator operator--(int)
@@ -183,7 +183,7 @@ public:
 		}
 		const_reverse_iterator& operator++()
 		{
-			it = it->previous;
+			it = it->pPrevious;
 			return *this;
 		}
 		const_reverse_iterator operator++(int)
@@ -194,7 +194,7 @@ public:
 		}
 		const_reverse_iterator& operator--()
 		{
-			it = it->next;
+			it = it->pNext;
 			return *this;
 		}
 		const_reverse_iterator operator--(int)
@@ -220,186 +220,184 @@ public:
 		Node* it;
 	};
 public:
-	explicit List() : first_node{ nullptr }, current_node{ nullptr }, last_node{ nullptr }, m_size{ 0 } {}
-	explicit List(size_t n) : first_node{ nullptr }, current_node{ nullptr }, last_node{ nullptr }, m_size{ 0 }
+	explicit List(size_t n = 0) : m_pFirstNode{nullptr}, m_pCurrentNode{nullptr}, m_pLastNode{nullptr}, m_nSize{n}
 	{
-		for (int i{}; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 		{
-			Node* ptr_tmp_node{ new Node };
+			Node* pTmpNode{new Node};
 			if (!i)
 			{
-				first_node = ptr_tmp_node;
-				current_node = ptr_tmp_node;
-				last_node = ptr_tmp_node;
-				ptr_tmp_node->previous = nullptr;
-				ptr_tmp_node->next = nullptr;
-				ptr_tmp_node->value = T{};
+                m_pFirstNode = pTmpNode;
+                m_pCurrentNode = pTmpNode;
+                m_pLastNode = pTmpNode;
+                pTmpNode->pPrevious = nullptr;
+                pTmpNode->pNext = nullptr;
+                pTmpNode->value = T{};
 			}
 			else
 			{
-				current_node->next = ptr_tmp_node;
-				last_node = ptr_tmp_node;
-				ptr_tmp_node->next = nullptr;
-				ptr_tmp_node->previous = current_node;
-				ptr_tmp_node->value = T{};
-				current_node = ptr_tmp_node;
+                m_pCurrentNode->pNext = pTmpNode;
+                m_pLastNode = pTmpNode;
+                pTmpNode->pNext = nullptr;
+                pTmpNode->pPrevious = m_pCurrentNode;
+                pTmpNode->value = T{};
+                m_pCurrentNode = pTmpNode;
 			}
 		}
-		m_size += n;
 	}
-	List(size_t n, const T& val) : first_node{ nullptr }, current_node{ nullptr }, last_node{ nullptr }, m_size{}
+	List(size_t n, const T& val) : m_pFirstNode{ nullptr }, m_pCurrentNode{ nullptr }, m_pLastNode{ nullptr }, m_nSize{0}
 	{
-		for (int i{}; i < n; ++i)
+		for (int i = 0; i < n; ++i)
 		{
 			push_back(val);
 		}
 	}
-	List(std::initializer_list<T> l) : first_node{ nullptr }, current_node{ nullptr }, last_node{ nullptr }, m_size{}
+	List(const std::initializer_list<T>& l) : m_pFirstNode{ nullptr }, m_pCurrentNode{ nullptr }, m_pLastNode{ nullptr }, m_nSize{0}
 	{
 		for (const auto& it : l)
 		{
 			push_back(it);
 		}
 	}
-	List(const List& x) : first_node{ nullptr }, current_node{ nullptr }, last_node{ nullptr }, m_size{}
+	List(const List& x) : m_pFirstNode{ nullptr }, m_pCurrentNode{ nullptr }, m_pLastNode{ nullptr }, m_nSize{0}
 	{
-		Node* ptr_tmp_node{ x.first_node };
-		while (ptr_tmp_node != nullptr)
+		Node* pTmpNode{x.first_node };
+		while (pTmpNode)
 		{
-			push_back(ptr_tmp_node->value);
-			ptr_tmp_node = ptr_tmp_node->next;
+			push_back(pTmpNode->value);
+            pTmpNode = pTmpNode->pNext;
 		}
 	}
 	void push_back(const T& value)
 	{
-		Node* ptr_tmp_node{ new Node };
-		if (!m_size)
+		Node* pTmpNode{ new Node };
+		if (!m_nSize)
 		{
-			first_node = ptr_tmp_node;
-			current_node = ptr_tmp_node;
-			last_node = ptr_tmp_node;
-			ptr_tmp_node->previous = nullptr;
-			ptr_tmp_node->next = nullptr;
-			ptr_tmp_node->value = value;
+            m_pFirstNode = pTmpNode;
+            m_pCurrentNode = pTmpNode;
+            m_pLastNode = pTmpNode;
+			pTmpNode->pPrevious = nullptr;
+			pTmpNode->pNext = nullptr;
+			pTmpNode->value = value;
 		}
 		else
 		{
-			current_node->next = ptr_tmp_node;
-			last_node = ptr_tmp_node;
-			ptr_tmp_node->next = nullptr;
-			ptr_tmp_node->previous = current_node;
-			ptr_tmp_node->value = value;
-			current_node = ptr_tmp_node;
+            m_pCurrentNode->pNext = pTmpNode;
+            m_pLastNode = pTmpNode;
+			pTmpNode->pNext = nullptr;
+			pTmpNode->pPrevious = m_pCurrentNode;
+			pTmpNode->value = value;
+            m_pCurrentNode = pTmpNode;
 		}
-		m_size++;
+        ++m_nSize;
 	}
 	iterator erase(const_iterator position)
 	{
 		const_iterator it{ cbegin() };
 		while (it != position)
 		{
-			it++;
+			++it;
 		}
-		Node* ptr_current_node{ it.getPtrNode() };
-		if (ptr_current_node == first_node)
+		Node* pCurrentNode{ it.getPtrNode() };
+		if (pCurrentNode == m_pFirstNode)
 		{
-			Node* ptr_next_node{ ptr_current_node->next };
-			delete ptr_current_node;
-			first_node = ptr_next_node;
-			ptr_next_node->previous = nullptr;
-			m_size--;
+			Node* pNextNode{pCurrentNode->pNext };
+			delete pCurrentNode;
+            m_pFirstNode = pNextNode;
+            pNextNode->pPrevious = nullptr;
+			--m_nSize;
 		}
-		else if (ptr_current_node == last_node)
+		else if (pCurrentNode == m_pLastNode)
 		{
 			//cout << "last node" << endl;
 		}
 		else
 		{
-			Node* ptr_previous_node{ ptr_current_node->previous };
-			Node* ptr_next_node{ ptr_current_node->next };
-			ptr_previous_node->next = ptr_next_node;
-			ptr_next_node->previous = ptr_previous_node;
+			Node* pPreviousNode{pCurrentNode->pPrevious };
+			Node* ptr_next_node{ pCurrentNode->pNext };
+            pPreviousNode->pNext = ptr_next_node;
+			ptr_next_node->pPrevious = pPreviousNode;
 			//delete ptr_current_node;
-			//m_size--;
+			//m_nSize--;
 		}
 		return it;
 		//return iterator(ptr_next_node);
 	}
 	iterator begin() const
 	{
-		return iterator(first_node);
+		return iterator(m_pFirstNode);
 	}
 	iterator end() const
 	{
-		if (!m_size)
+		if (m_nSize)
 		{
-			return iterator();
+            return iterator(m_pLastNode->pNext);
 		}
-		return iterator(last_node->next);
+        return iterator();
 	}
 	const_iterator cbegin() const
 	{
-		return const_iterator(first_node);
+		return const_iterator(m_pFirstNode);
 	}
 	const_iterator cend() const
 	{
-		if (!m_size)
+		if (m_nSize)
 		{
-			return const_iterator();
+            return const_iterator(m_pLastNode->pNext);
 		}
-		return const_iterator(last_node->next);
+        return const_iterator();
 	}
 	reverse_iterator rbegin() const
 	{
-		return reverse_iterator(last_node);
+		return reverse_iterator(m_pLastNode);
 	}
 	reverse_iterator rend() const
 	{
-		if (!m_size)
+		if (m_nSize)
 		{
-			return reverse_iterator();
+            return reverse_iterator(m_pFirstNode->pPrevious);
 		}
-		return reverse_iterator(first_node->previous);
+        return reverse_iterator();
 	}
 	const_reverse_iterator crbegin() const
 	{
-		return const_reverse_iterator(last_node);
+		return const_reverse_iterator(m_pLastNode);
 	}
 	const_reverse_iterator crend() const
 	{
-		if (!m_size)
+		if (m_nSize)
 		{
-			return const_reverse_iterator();
+            return const_reverse_iterator(m_pFirstNode->pPrevious);
 		}
-		return const_reverse_iterator(first_node->previous);
+        return const_reverse_iterator();
 	}
 	void clear()
 	{
-		while (first_node != nullptr)
+		while (m_pFirstNode)
 		{
-			Node* ptr_tmp{ first_node };
-			first_node = first_node->next;
+			Node* ptr_tmp{ m_pFirstNode };
+            m_pFirstNode = m_pFirstNode->pNext;
 			delete ptr_tmp;
 		}
-		first_node = nullptr;
-		last_node = nullptr;
-		m_size = 0;
+        m_pFirstNode = nullptr;
+        m_pLastNode = nullptr;
+        m_nSize = 0;
 	}
 	bool empty() const
 	{
-		return m_size == 0;
+		return m_nSize == 0;
 	}
 	size_t size() const
 	{
-		return m_size;
+		return m_nSize;
 	}
 	~List()
 	{
-		while (first_node != nullptr)
+		while (m_pFirstNode)
 		{
-			Node* ptr_tmp_node{ first_node };
-			first_node = first_node->next;
-			delete ptr_tmp_node;
+            Node* pTmpNode{m_pFirstNode};
+            m_pFirstNode = m_pFirstNode->pNext;
+			delete pTmpNode;
 		}
 	}
 };
