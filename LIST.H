@@ -14,7 +14,7 @@ private:
 		Node* pNext;
 		Node* pPrevious;
 	};
-    Node* m_pFirstNode;
+    	Node* m_pFirstNode;
 	Node* m_pCurrentNode;
 	Node* m_pLastNode;
 	size_t m_nSize;
@@ -227,21 +227,21 @@ public:
 			Node* pTmpNode{new Node};
 			if (!i)
 			{
-                m_pFirstNode = pTmpNode;
-                m_pCurrentNode = pTmpNode;
-                m_pLastNode = pTmpNode;
-                pTmpNode->pPrevious = nullptr;
-                pTmpNode->pNext = nullptr;
-                pTmpNode->value = T{};
+                		m_pFirstNode = pTmpNode;
+                		m_pCurrentNode = pTmpNode;
+                		m_pLastNode = pTmpNode;
+                		pTmpNode->pPrevious = nullptr;
+                		pTmpNode->pNext = nullptr;
+                		pTmpNode->value = T{};
 			}
 			else
 			{
-                m_pCurrentNode->pNext = pTmpNode;
-                m_pLastNode = pTmpNode;
-                pTmpNode->pNext = nullptr;
-                pTmpNode->pPrevious = m_pCurrentNode;
-                pTmpNode->value = T{};
-                m_pCurrentNode = pTmpNode;
+                		m_pCurrentNode->pNext = pTmpNode;
+                		m_pLastNode = pTmpNode;
+                		pTmpNode->pNext = nullptr;
+                		pTmpNode->pPrevious = m_pCurrentNode;
+                		pTmpNode->value = T{};
+                		m_pCurrentNode = pTmpNode;
 			}
 		}
 	}
@@ -273,21 +273,21 @@ public:
 		Node* pTmpNode{ new Node };
 		if (!m_nSize)
 		{
-            m_pFirstNode = pTmpNode;
-            m_pCurrentNode = pTmpNode;
-            m_pLastNode = pTmpNode;
+            		m_pFirstNode = pTmpNode;
+            		m_pCurrentNode = pTmpNode;
+            		m_pLastNode = pTmpNode;
 			pTmpNode->pPrevious = nullptr;
 			pTmpNode->pNext = nullptr;
 			pTmpNode->value = value;
 		}
 		else
 		{
-            m_pCurrentNode->pNext = pTmpNode;
-            m_pLastNode = pTmpNode;
+            		m_pCurrentNode->pNext = pTmpNode;
+            		m_pLastNode = pTmpNode;
 			pTmpNode->pNext = nullptr;
 			pTmpNode->pPrevious = m_pCurrentNode;
 			pTmpNode->value = value;
-            m_pCurrentNode = pTmpNode;
+           		 m_pCurrentNode = pTmpNode;
 		}
         ++m_nSize;
 	}
@@ -303,8 +303,8 @@ public:
 		{
 			Node* pNextNode{pCurrentNode->pNext };
 			delete pCurrentNode;
-            m_pFirstNode = pNextNode;
-            pNextNode->pPrevious = nullptr;
+            		m_pFirstNode = pNextNode;
+            		pNextNode->pPrevious = nullptr;
 			--m_nSize;
 		}
 		else if (pCurrentNode == m_pLastNode)
@@ -315,7 +315,7 @@ public:
 		{
 			Node* pPreviousNode{pCurrentNode->pPrevious };
 			Node* ptr_next_node{ pCurrentNode->pNext };
-            pPreviousNode->pNext = ptr_next_node;
+            		pPreviousNode->pNext = ptr_next_node;
 			ptr_next_node->pPrevious = pPreviousNode;
 			//delete ptr_current_node;
 			//m_nSize--;
@@ -331,7 +331,7 @@ public:
 	{
 		if (m_nSize)
 		{
-            return iterator(m_pLastNode->pNext);
+            		return iterator(m_pLastNode->pNext);
 		}
         return iterator();
 	}
@@ -343,9 +343,9 @@ public:
 	{
 		if (m_nSize)
 		{
-            return const_iterator(m_pLastNode->pNext);
+            		return const_iterator(m_pLastNode->pNext);
 		}
-        return const_iterator();
+       		return const_iterator();
 	}
 	reverse_iterator rbegin() const
 	{
@@ -355,9 +355,9 @@ public:
 	{
 		if (m_nSize)
 		{
-            return reverse_iterator(m_pFirstNode->pPrevious);
+            		return reverse_iterator(m_pFirstNode->pPrevious);
 		}
-        return reverse_iterator();
+       		return reverse_iterator();
 	}
 	const_reverse_iterator crbegin() const
 	{
@@ -367,16 +367,16 @@ public:
 	{
 		if (m_nSize)
 		{
-            return const_reverse_iterator(m_pFirstNode->pPrevious);
+            		return const_reverse_iterator(m_pFirstNode->pPrevious);
 		}
-        return const_reverse_iterator();
+        	return const_reverse_iterator();
 	}
 	void clear()
 	{
 		while (m_pFirstNode)
 		{
 			Node* ptr_tmp{ m_pFirstNode };
-            m_pFirstNode = m_pFirstNode->pNext;
+            		m_pFirstNode = m_pFirstNode->pNext;
 			delete ptr_tmp;
 		}
         m_pFirstNode = nullptr;
@@ -395,8 +395,8 @@ public:
 	{
 		while (m_pFirstNode)
 		{
-            Node* pTmpNode{m_pFirstNode};
-            m_pFirstNode = m_pFirstNode->pNext;
+            		Node* pTmpNode{m_pFirstNode};
+            		m_pFirstNode = m_pFirstNode->pNext;
 			delete pTmpNode;
 		}
 	}
